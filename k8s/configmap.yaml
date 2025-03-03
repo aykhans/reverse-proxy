@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: reverse-proxy-config
+data:
+  RATE_LIMIT: "10"
+  PROXY_TIMEOUT_SECONDS: "30"
+  MAX_IDLE_CONNS: "100"
+  IDLE_CONN_TIMEOUT_SECONDS: "90" 

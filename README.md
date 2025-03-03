@@ -122,6 +122,76 @@ When rate limits are exceeded, the proxy sends a webhook notification with the f
 }
 ```
 
+## Docker
+
+Build the Docker image:
+```bash
+docker build -t natigmaderov/reverse-proxy:latest .
+```
+
+Run the container:
+```bash
+docker run -d \
+  -p 8080:8080 \
+  -e BACKEND_URL=http://your-backend:8080 \
+  -e RATE_LIMIT=10 \
+  -e CONTAINER_ID=proxy-1 \
+  -e WEBHOOK_URL=http://your-webhook:8080 \
+  natigmaderov/reverse-proxy:latest
+```
+
+## Kubernetes Deployment
+
+The reverse proxy can be deployed as a sidecar container in your Kubernetes deployments. Example manifests are provided in the `k8s/` directory.
+
+1. Apply the ConfigMap:
+```bash
+kubectl apply -f k8s/configmap.yaml
+```
+
+2. Deploy the application with the reverse proxy sidecar:
+```bash
+kubectl apply -f k8s/deployment.yaml
+```
+
+3. Create the service:
+```bash
+kubectl apply -f k8s/service.yaml
+```
+
+### Sidecar Configuration
+
+The reverse proxy sidecar is configured to:
+- Route traffic to the main application container via `localhost`
+- Apply rate limiting per client IP
+- Send webhook notifications when rate limits are exceeded
+- Use Kubernetes downward API for container identification
+- Use ConfigMap for configuration
+
+Example deployment:
+```yaml
+containers:
+- name: main-app
+  image: your-app-image:tag
+  ports:
+  - containerPort: 8080
+
+- name: reverse-proxy
+  image: natigmaderov/reverse-proxy:latest
+  ports:
+  - containerPort: 8080
+  env:
+  - name: BACKEND_URL
+    value: "http://localhost:8080"  # Points to main container
+  - name: CONTAINER_ID
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.name
+  envFrom:
+  - configMapRef:
+      name: reverse-proxy-config
+```
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.

@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-with-proxy
+  labels:
+    app: app-with-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-with-proxy
+  template:
+    metadata:
+      labels:
+        app: app-with-proxy
+    spec:
+      containers:
+      # Main application container
+      - name: main-app
+        image: your-app-image:tag
+        ports:
+        - containerPort: 8080
+        
+      # Reverse proxy sidecar
+      - name: reverse-proxy
+        image: natigmaderov/reverse-proxy:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: BACKEND_URL
+          value: "http://localhost:8080"  # Points to the main container
+        - name: CONTAINER_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: WEBHOOK_URL
+          value: "http://monitoring-service:8080/webhook"
+        envFrom:
+        - configMapRef:
+            name: reverse-proxy-config
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "64Mi"
+          limits:
+            cpu: "200m"
+            memory: "128Mi"
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 20 
