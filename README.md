@@ -20,8 +20,14 @@ go get github.com/natigmaderov/reverse-proxy
 
 ## Configuration
 
-The proxy can be configured using environment variables or a `.env` file:
+The proxy can be configured using environment variables or a `.env` file. To get started:
 
+1. Copy the example environment file:
+```bash
+cp .env.example .env
+```
+
+2. Modify the `.env` file with your settings:
 ```env
 # Backend URL configuration
 BACKEND_URL=http://localhost:8080
@@ -36,6 +42,8 @@ PROXY_TIMEOUT_SECONDS=30
 MAX_IDLE_CONNS=100
 IDLE_CONN_TIMEOUT_SECONDS=90
 ```
+
+Note: The `.env` file is not tracked in git for security reasons. Make sure to keep your environment files secure and never commit them to version control.
 
 ## Usage
 
