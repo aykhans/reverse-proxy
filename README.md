@@ -38,9 +38,9 @@ CONTAINER_ID=local-dev
 # Webhook configuration
 WEBHOOK_URL=http://webhook.example.com/notify
 # Proxy configuration
-PROXY_TIMEOUT_SECONDS=30
+PROXY_TIMEOUT=30s # 30 seconds
 MAX_IDLE_CONNS=100
-IDLE_CONN_TIMEOUT_SECONDS=90
+IDLE_CONN_TIMEOUT=90s # 90 seconds
 ```
 
 Note: The `.env` file is not tracked in git for security reasons. Make sure to keep your environment files secure and never commit them to version control.
