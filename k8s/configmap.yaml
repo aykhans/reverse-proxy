@@ -4,6 +4,6 @@ metadata:
   name: reverse-proxy-config
 data:
   RATE_LIMIT: "10"
-  PROXY_TIMEOUT_SECONDS: "45"
+  PROXY_TIMEOUT: "45s" # 45 seconds
   MAX_IDLE_CONNS: "100"
-  IDLE_CONN_TIMEOUT_SECONDS: "90" 
+  IDLE_CONN_TIMEOUT: "90s" # 90 seconds
